@@ -3,5 +3,7 @@ uvicorn
 redis
 sqlalchemy
 pytest
+python-dotenv
 python-jose
-passlib[bcrypt]
+passlib
+bcrypt
