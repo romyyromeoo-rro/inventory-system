@@ -4,7 +4,7 @@ from auth import login, create_user
 from inventory_manager import *
 from audit import *
 from datetime import datetime, timedelta
-from auth.token_service import create_access_token, verify_token
+from auth.token_service import create_access_token, verify_token, verify_jwt
 
 
 SESSION_TIMEOUT = 1
@@ -20,7 +20,7 @@ def validate_session(session):
         return False
 
 
-    payload = verify_jwt(session["token"])
+    payload = verify_token(session["token"])
 
     if not payload:
         return False
@@ -53,8 +53,8 @@ def show_menu(conn, session):
         return
 
 
-    current_user = payload["username"]
-    role = payload["role"]
+    current_user = payload.get("sub")
+    role = payload.get("role")
 
     while True:
         if is_session_expired(session):

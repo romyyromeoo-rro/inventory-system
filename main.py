@@ -8,7 +8,7 @@ from services.audit_service import log_action_service
 from services.metrics import get_metrics
 from menu import show_menu
 from datetime import datetime
-from security import *
+from security_logger import *
 
 
 session = None
@@ -59,7 +59,10 @@ def main():
             "username": current_user,
             "role": role,
             "last_activity": datetime.now(),
-            "token": create_jwt(current_user, role)
+            "token": create_access_token({
+                "sub": current_user,
+                "role": role
+            })
         }
         print(f"🔑 Token: {session['token']}")
     else:

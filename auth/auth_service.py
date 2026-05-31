@@ -2,7 +2,7 @@ import hashlib
 import time
 import bcrypt
 from datetime import datetime, timedelta
-from security import *
+from security_logger import *
 from auth.password_security import *
 from auth.token_service import *
 from core.config import config

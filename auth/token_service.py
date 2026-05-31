@@ -100,6 +100,35 @@ def verify_token(token: str):
 
 
 
+
+def verify_jwt(token):
+    try:
+        header_enc, payload_enc, signature_enc = token.split(".")
+        signature_raw = f"{header_enc}.{payload_enc}".encode()
+        expected_signature = hmac.new(
+            SECRET_KEY.encode(),
+            signature_raw,
+            hashlib.sha256
+        ).digest()
+
+        expected_signature_enc = base64_encode(expected_signature)
+
+        if signature_enc != expected_signature_enc:
+            return False
+
+        payload = json.loads(base64_decode(payload_enc))
+
+        if time.time() > payload["exp"]:
+            print("⏳ Token Expired.")
+            return False
+
+        return payload
+
+    except Exception:
+        return False
+
+
+
 #def blacklist_token(jti: str, exp):
     #conn = get_connection()
     #cursor = conn.cursor()
