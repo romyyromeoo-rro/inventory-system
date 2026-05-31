@@ -36,10 +36,10 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     ip_key = f"ip:{ip}"
     user_key = f"login:{username}"
 
-    if is_rate_limited(ip_key, limit=10, window_minutes=10):
+    if is_rate_limited(ip_key, limit=10, window=600):
         raise HTTPException(status_code=429, detail="Too many request from this IP")
 
-    if is_rate_limited(user_key, limit=10, window=10):
+    if is_rate_limited(user_key, limit=10, window=600):
             raise HTTPException(429, "Too many login attempts")
 
     user, role, message = login_user(conn, username, password, ip)
@@ -132,8 +132,9 @@ def get_items(
 request: Request):
 #user=Depends(get_current_user)):
     ip = request.client.host
+    key = f"{ip}:/items"
 
-    if is_rate_limited(ip, "/items", limit=5, window_minutes=1):
+    if is_rate_limited(key, limit=5, window=60):
         raise HTTPException(429, "Too many request")
 
     conn = get_connection()
@@ -190,7 +191,7 @@ user=Depends(require_permission("update"))):
 
     ip = request.client.host
 
-    if is_rate_limited(ip, f"/items/{id}", limit=3, window_minutes=5):
+    if is_rate_limited(f"{ip}:/items/{id}", limit=3, window=300):
         raise HTTPException(429, "Too many request")
 
     try:
@@ -217,7 +218,7 @@ user=Depends(require_permission("delete"))):
 
     ip = request.client.host
 
-    if is_rate_limited(ip, f"/items/{id}", limit=3, window_minutes=5):
+    if is_rate_limited(f"{ip}:/items/{id}", limit=3, window=300):
         raise HTTPException(429, "Too many requests")
 
     try:
