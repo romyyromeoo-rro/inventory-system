@@ -2,6 +2,7 @@ fastapi
 uvicorn
 redis
 sqlalchemy
+python-multipart
 pytest
 python-dotenv
 python-jose
